@@ -7,6 +7,11 @@ Vue.config.productionTip = false
 
 //import '@/styles/base.less'
 
+
+//导入 element.js 
+import '@/plugins/element.js'
+
+//导入 requesy(封装了axios 路由)
 import router from '@/router'
 
 new Vue({
