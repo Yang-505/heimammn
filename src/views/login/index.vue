@@ -8,53 +8,33 @@
         <span class="sub-title">用户登录</span>
       </div>
       <!-- form表单部分 -->
-    <el-form class="login-form"
-         :model="loginForm"
-
-         :rules="rules">
+      <el-form class="login-form" :model="loginForm" ref="loginFormRef" :rules="rules">
         <el-form-item prop="phone">
           <!-- 手机号 -->
-          <el-input
-            v-model="loginForm.phone"
-            prefix-icon="el-icon-user"
-            placeholder="请输入手机号"
-          ></el-input>
+          <el-input v-model="loginForm.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <!-- 密码 -->
-          <el-input 
-           v-model="loginForm.password"
-           prefix-icon="el-icon-lock"
-           placeholder="请输入密码"
-            ></el-input>
+          <el-input v-model="loginForm.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item prop="code">
           <!-- 验证码 -->
           <el-row :gutter="20">
             <el-col :span="16">
-              <el-input 
-              v-model="loginForm.code"    
-              prefix-icon="el-icon-lock" 
-              placeholder="请输入验证码"></el-input>
+              <el-input v-model="loginForm.code" prefix-icon="el-icon-lock" placeholder="请输入验证码"></el-input>
             </el-col>
             <el-col :span="8">
-              <img
-                class="captcha"
-                src="http://47.106.148.205/heimamm/public/captcha?type=login&random=0.5041014593676592"
-                alt
-              />
+              <img class="captcha" @click="getCode" :src="codeURL" alt />
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item prop="isCheck">
-          <el-checkbox 
-          v-model="loginForm.isCheck"
-          ></el-checkbox>我已阅读并同意
+          <el-checkbox v-model="loginForm.isCheck"></el-checkbox>我已阅读并同意
           <el-link type="primary" href="http://www.baidu.com">用户协议</el-link>和
           <el-link type="primary" href="http://www.baidu.com">隐试条款</el-link>
         </el-form-item>
         <el-form-item>
-          <el-button style="width:100%" type="primary">登录</el-button>
+          <el-button style="width:100%" @click="loginClick" type="primary">登录</el-button>
         </el-form-item>
         <el-form-item label>
           <el-button style="width:100%" type="primary">注册</el-button>
@@ -73,60 +53,93 @@ export default {
   name: "Login",
   data() {
     return {
+      //生成登录验证码
+      codeURL: process.env.VUE_APP_BASEURL + "/captcha?type=login",
       loginForm: {
         //模型
-        phone: "", //手机号
-        password: "", //密码
-        code: "", //密码
-        isCheck:true, //是否勾选了用户协议
+        phone: "18511111111", //手机号
+        password: "12345678", //密码
+        code: "", //验证码
+        isCheck: true //是否勾选了用户协议
       },
       rules: {
         //校验规则
-        phone: [//手机号
+        phone: [
+          //手机号
           // // //是一个数组,代表可以多个校验规则
           // { required: true, message: "必须输入手机号", trigger: "blur" },
           // { min: 11, max: 11, message: "手机号必须是11位", trigger: "blur" },
           {
-            validator:(rule, value, callback)=>{
-             //非空判断
-             if(!value){
-               return callback(new Error("手机号不能为空"));
-             }
-             const reg = /^1[3456789][0-9]{9}$/;
-             if(!reg.test(value)){
-               return callback(new Error("手机号不合法"));
-             }
+            validator: (rule, value, callback) => {
+              //非空判断
+              if (!value) {
+                return callback(new Error("手机号不能为空"));
+              }
+              const reg = /^1[3456789][0-9]{9}$/;
+              if (!reg.test(value)) {
+                return callback(new Error("手机号不合法"));
+              }
               callback();
-            },trigger: "blur"
-          },
-          
+            },
+            trigger: "blur"
+          }
         ],
         //密码
-        password:[
-            { required: true, message: "必须输入密码", trigger: "blur" },
-            { min:6,max:12,message:"长度在 6 到 12 个字符", trigger:"blur"}
+        password: [
+          { required: true, message: "必须输入密码", trigger: "blur" },
+          { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
         ],
         //验证码
-        code:[
-          {min:4,max:4,message:"必须是4位",trigger:"blur"},
-          {required:true,message:"必须输入验证码",trigger:"blur"}
+        code: [
+          { min: 4, max: 4, message: "必须是4位", trigger: "blur" },
+          { required: true, message: "必须输入验证码", trigger: "blur" }
         ],
         //勾选用户协议
-        isCheck:[
-         {
-           validator:(rule,value,callback)=>{
-             //判断用户是否勾选
-            // console.log('value is',value);
-             if(!value){
-               return callback(new Error("请先勾选用户协议"));
-             }
-             callback();
-           },trigger:"change",
-         },
-        ],
-      },
+        isCheck: [
+          {
+            validator: (rule, value, callback) => {
+              //判断用户是否勾选
+              // console.log('value is',value);
+              if (!value) {
+                return callback(new Error("请先勾选用户协议"));
+              }
+              callback();
+            },
+            trigger: "change"
+          }
+        ]
+      }
     };
   },
+  //方法
+  methods: {
+    //获取验证码
+    getCode() {
+      this.codeURL =
+        process.env.VUE_APP_BASEURL +
+        "/captcha?type=login$t" +
+        Math.random() * 888;
+    },
+    //登录
+    loginClick() {
+      this.$refs.loginFormRef.validate(valid => {
+        //  console.log(valid);
+        if (!valid) return;
+        //发请求给后台进行登录
+        this.$axios.post("/login", this.loginForm).then(res => {
+          if (res.data.code == 200) {
+            this.$message({
+              message: "登录成功~",
+              type: "success"
+            });
+          }else{
+            this.$message.error(res.data.message);
+            this.codeURL = process.env.VUE_APP_BASEURL + "/captcha?type=login&t" + Math.random()
+          }
+        });
+      });
+    }
+  }
 };
 </script>
 
