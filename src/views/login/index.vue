@@ -49,6 +49,8 @@
 </template>
 
 <script>
+//按需导入
+import {setToken} from '@/utils/token.js'
 export default {
   name: "Login",
   data() {
@@ -122,21 +124,39 @@ export default {
     },
     //登录
     loginClick() {
-      this.$refs.loginFormRef.validate(valid => {
-        //  console.log(valid);
+      this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return;
-        //发请求给后台进行登录
-        this.$axios.post("/login", this.loginForm).then(res => {
-          if (res.data.code == 200) {
-            this.$message({
-              message: "登录成功~",
-              type: "success"
-            });
-          }else{
-            this.$message.error(res.data.message);
-            this.codeURL = process.env.VUE_APP_BASEURL + "/captcha?type=login&t" + Math.random()
-          }
-        });
+        // //发请求给后台进行登录
+        // this.$axios.post("/login", this.loginForm).then(res => {
+        //   if (res.data.code == 200) {
+        //     this.$message({
+        //       message: "登录成功~",
+        //       type: "success"
+        //     });
+        //   }else{
+        //     this.$message.error(res.data.message);
+        //     this.codeURL = process.env.VUE_APP_BASEURL + "/captcha?type=login&t" + Math.random()
+        //   }
+        // });
+
+        const res = await this.$axios.post("/login", this.loginForm);
+        if (res.data.code == 200) {
+          this.$message({
+            message: "登录成功~",
+            type: "success"
+          });
+          //保存token
+          setToken(res.data.data.token);
+
+          //跳转到后台管理页面(编程式导航)
+          this.$router.push('/layout');
+        } else {
+          this.$message.error(res.data.message);
+          this.codeURL =
+            process.env.VUE_APP_BASEURL +
+            "/captcha?type=login&t" +
+            Math.random();
+        }
       });
     }
   }
