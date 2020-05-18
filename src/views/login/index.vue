@@ -54,6 +54,16 @@
 </template>
 
 <script>
+/* 
+1.分析:(登录页面中的'注册'子组件)
+  在登录页面上 再写一个子组件 样式写好之后
+  在登录页面使用:
+    导入 注册 components 引入使用
+    在引入使用中定义一个 ref值
+    在方法中 this.$refs.refisterRef === 子组件中的注册页面
+    this.$refs.refisterRef.dialogVisible == 取到了注册子组件中定义的方法
+    
+*/
 //按需导入
 import { setToken } from "@/utils/token.js";
 //导入register子组件
