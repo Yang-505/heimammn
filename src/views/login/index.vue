@@ -7,58 +7,69 @@
         <span class="line"></span>
         <span class="sub-title">用户登录</span>
       </div>
+
       <!-- form表单部分 -->
-      <el-form class="login-form" :model="loginForm" ref="loginFormRef" :rules="rules">
+      <el-form :model="loginForm" :rules="rules" ref="loginFormRef" class="login-form">
         <el-form-item prop="phone">
-          <!-- 手机号 -->
-          <el-input v-model="loginForm.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
+          <el-input prefix-icon="el-icon-user" placeholder="请输入手机号" v-model="loginForm.phone"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <!-- 密码 -->
-          <el-input v-model="loginForm.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+          <el-input
+            v-model="loginForm.password"
+            prefix-icon="el-icon-lock"
+            placeholder="请输入密码"
+            show-password
+          ></el-input>
         </el-form-item>
         <el-form-item prop="code">
-          <!-- 验证码 -->
-          <el-row :gutter="20">
+          <el-row :gutter="18">
             <el-col :span="16">
-              <el-input v-model="loginForm.code" prefix-icon="el-icon-lock" placeholder="请输入验证码"></el-input>
+              <el-input v-model="loginForm.code" prefix-icon="el-icon-key" placeholder="请输入验证码"></el-input>
             </el-col>
             <el-col :span="8">
-              <img class="captcha" @click="getCode" :src="codeURL" alt />
+              <img class="captcha" :src="codeURL" @click="getCode" />
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item prop="isCheck">
           <el-checkbox v-model="loginForm.isCheck"></el-checkbox>我已阅读并同意
           <el-link type="primary" href="http://www.baidu.com">用户协议</el-link>和
-          <el-link type="primary" href="http://www.baidu.com">隐试条款</el-link>
+          <el-link type="primary" href="http://www.baidu.com">隐私条款</el-link>
         </el-form-item>
         <el-form-item>
           <el-button style="width:100%" @click="loginClick" type="primary">登录</el-button>
         </el-form-item>
-        <el-form-item label>
-          <el-button style="width:100%" type="primary">注册</el-button>
+        <el-form-item>
+          <el-button style="width:100%" type="primary" @click="register">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- 左侧图片 -->
     <div class="right">
       <img src="@/assets/login_bg.png" alt />
+      <!-- 引入子组件 -->
+      <register ref="refisterRef"></register>
     </div>
   </div>
 </template>
 
 <script>
 //按需导入
-import {setToken} from '@/utils/token.js'
+import { setToken } from "@/utils/token.js";
+//导入register子组件
+import register from './register.vue'
 export default {
+  //注册
+  components:{
+    register
+  },
   name: "Login",
   data() {
     return {
       //生成登录验证码
       codeURL: process.env.VUE_APP_BASEURL + "/captcha?type=login",
+      //模型
       loginForm: {
-        //模型
         phone: "18511111111", //手机号
         password: "12345678", //密码
         code: "", //验证码
@@ -124,7 +135,7 @@ export default {
     },
     //登录
     loginClick() {
-      this.$refs.loginFormRef.validate(async (valid) => {
+      this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
         // //发请求给后台进行登录
         // this.$axios.post("/login", this.loginForm).then(res => {
@@ -149,7 +160,7 @@ export default {
           setToken(res.data.data.token);
 
           //跳转到后台管理页面(编程式导航)
-          this.$router.push('/layout');
+          this.$router.push("/layout");
         } else {
           this.$message.error(res.data.message);
           this.codeURL =
@@ -158,6 +169,11 @@ export default {
             Math.random();
         }
       });
+    },
+
+    //注册
+    register(){
+      this.$refs.refisterRef.dialogVisible = true;
     }
   }
 };
