@@ -14,7 +14,11 @@
         </div>
       </el-header>
       <el-container>
-        <el-aside width="200px">左边菜单</el-aside>
+        <!-- 左侧菜单 -->
+        <el-aside width="200px">
+          <el-menu-item default-acctive="3"> 
+          </el-menu-item>
+        </el-aside>
         <el-main>内容部分</el-main>
       </el-container>
     </el-container>
