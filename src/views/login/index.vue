@@ -80,8 +80,8 @@ export default {
       codeURL: process.env.VUE_APP_BASEURL + "/captcha?type=login",
       //模型
       loginForm: {
-        phone: "18511111111", //手机号
-        password: "12345678", //密码
+        phone: "", //手机号
+        password: "", //密码
         code: "", //验证码
         isCheck: true //是否勾选了用户协议
       },

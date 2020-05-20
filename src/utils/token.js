@@ -12,4 +12,5 @@ const removeToken = () =>{
     localStorage.removeItem(KEY);
 }
 
+//按需导出 暴露对象
 export {setToken,getToken,removeToken};
