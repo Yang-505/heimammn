@@ -15,7 +15,7 @@ import User from '@/views/layout/user';
 
 const router = new VueRouter({
     routes: [
-        {
+        {// 重定向
             path: "/",
             redirect: "/login"
         },
@@ -38,6 +38,9 @@ const router = new VueRouter({
 
 //全局导航守卫
 router.beforeEach((to, from, next) => {
+    // console.log(to);
+    // console.log(from);
+    // console.log(next);
     // to and from are both route objects. must call `next`.
     if (to.fullPath == '/login') {
         next();

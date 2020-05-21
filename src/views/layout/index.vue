@@ -17,10 +17,11 @@
       </div>
     </el-header>
     <el-container>
+      <!--  -->
       <el-aside width="auto">
         <el-menu
           router
-          default-active="3"
+          :default-active="defaultActive"
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
         >
@@ -47,6 +48,7 @@
         </el-menu>
       </el-aside>
       <el-main style="background-color:#e8e9ec;">
+
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -61,27 +63,28 @@ export default {
       avatar: "", // 用户的头像
       username: "", // 昵称
       isCollapse: false, // 是否收起折叠菜单
+      defaultActive:'' //菜单选中的值
     };
   },
   created() {
+    this.defaultActive = this.$route.fullPath;
     this.getUserInfoData();
   },
   methods: {
-    // 获取用户信息
-    async getUserInfoData() {
-      const res = await this.$axios.get("/info", {
-        // headers: {
-        //   token: getToken(),
-        // },
+    //获取用户信息
+    async getUserInfoData(){
+      const res = await this.$axios.get('/info',{
+
       });
-
-      if (res.data.code === 200) {
+      if(res.data.code == 200){
+        //用户头像
         this.avatar = process.env.VUE_APP_BASEURL + "/" + res.data.data.avatar;
+        //昵称
         this.username = res.data.data.username;
-      } else if (res.data.code === 206){
-        // 删除token
+      }else if(res.data.code == 206){
+        //删除token
 
-        // 跳转回登录页面
+        //跳转到登录页面
       }
     },
     // 退出
