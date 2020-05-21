@@ -32,7 +32,7 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password" label="密码">
-          <el-input v-model="registerForm.password"></el-input>
+          <el-input  type="password" v-model="registerForm.password"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="affirmPassword">
           <el-input type="password" v-model="registerForm.affirmPassword"></el-input>
