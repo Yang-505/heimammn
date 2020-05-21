@@ -3,13 +3,13 @@
     <!-- 搜索部分 -->
     <el-card>
       <el-form inline ref="searchFormRef" label-width="80px" :model="searchForm">
-        <el-form-item label="用户名称">
+        <el-form-item label="用户名称" prop="username">
           <el-input style="width:150px" v-model="searchForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="用户邮箱">
+        <el-form-item label="用户邮箱" prop="email">
           <el-input style="width:150px" v-model="searchForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="角色">
+        <el-form-item label="角色" prop="role_id">
           <el-select v-model="searchForm.role_id" placeholder="请选择">
             <el-option label="超级管理员" value="1"></el-option>
             <el-option label="管理员" value="2"></el-option>
@@ -19,8 +19,8 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary">搜索</el-button>
-          <el-button type="default">清除</el-button>
+          <el-button type="primary" @click="search">搜索</el-button>
+          <el-button type="default" @click="clear">清除</el-button>
           <el-button type="primary">+新增用户</el-button>
         </el-form-item>
       </el-form>
@@ -37,7 +37,7 @@
         <el-table-column prop="remark" label="备注"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 0" style="color:red">禁用</span>
+            <span v-if="scope.row.status === 0" style="color:red;">禁用</span>
             <span v-if="scope.row.status === 1" style="color:#6ac144">启用</span>
           </template>
         </el-table-column>
@@ -51,6 +51,18 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <div style="margin-top:15px; text-align:center;">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="page"
+          :page-sizes="[1, 2, 3, 4,5]"
+          :page-size="limit"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </el-card>
   </div>
 </template>  
@@ -96,6 +108,30 @@ export default {
 
         this.total = res.data.data.pagination.total;
       }
+    },
+    //每页条数
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    //当前页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+
+    //搜索
+    search() {
+      this.page = 1; //从第一页开始
+      this.getUserListData();
+    },
+    //清除
+    clear(){
+      // this.searchForm.username = '';
+      // this.searchForm.email = '';
+      // this.searchForm.role_id = '';
+
+      this.$refs.searchFormRef.resetFields();
+
+      this.search();
     }
   }
 };
