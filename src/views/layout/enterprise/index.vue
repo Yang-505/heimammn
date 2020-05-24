@@ -42,7 +42,7 @@
         </el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
-            <el-button type="primary">编辑</el-button>
+            <el-button type="primary" @click="editEnterprise(scope.row)">编辑</el-button>
             <el-button
               @click="scopeClick(scope.row.id)"
               :type="scope.row.status === 0 ? 'success' : 'info'"
@@ -65,7 +65,7 @@
       </div>
     </el-card>
     <!--  -->
-    <EnterpriseEdit ref="enterpriseEditRef" @click="search"></EnterpriseEdit>
+    <EnterpriseEdit ref="enterpriseEditRef" @search="search"></EnterpriseEdit>
   </div>
 </template>
 
@@ -143,31 +143,52 @@ export default {
       this.search();
     },
     //删除
-     del(id,username) {
+    del(id, username) {
       this.$confirm(`确定要删除该数据吗${username}该用户吗`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$axios.post('/enterprise/remove',{id});
-          if(res.data.code ===200){
+          const res = await this.$axios.post("/enterprise/remove", { id });
+          if (res.data.code === 200) {
             this.$message({
-              message:"删除成功",
-              type:"success"
+              message: "删除成功",
+              type: "success"
             });
 
             //重新查询
             this.search();
           }
         })
-        .catch(() => {
-       
-        });
+        .catch(() => {});
     },
+    //新增企业
     add() {
+      this.$refs.enterpriseEditRef.mode = "add";
+      this.$refs.enterpriseEditRef.enterpriseForm = {
+        eid:"",//企业编号
+        name:"", //企业名称
+        short_name:"", //企业简称
+        intro:"", //企业简介
+        remark:"", //备注
+      }
       this.$refs.enterpriseEditRef.dialogvisible = true;
-      this.$refs.enterpriseEditRef.mode = 'add';
+    },
+    //修改企业
+    editEnterprise(row) {
+      // console.log(row);
+      const { id, eid, intro, name, short_name, remark } = row;
+      this.$refs.enterpriseEditRef.enterpriseForm = {
+        id,
+        eid,
+        name,
+        short_name,
+        intro,
+        remark
+      };
+      this.$refs.enterpriseEditRef.mode = "edit";
+      this.$refs.enterpriseEditRef.dialogvisible = true;
     }
   }
 };
