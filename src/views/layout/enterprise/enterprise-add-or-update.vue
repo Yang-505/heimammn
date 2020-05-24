@@ -60,6 +60,19 @@ export default {
       }
     };
   },
+  watch:{
+    dialogvisible(newValue){
+      // console.log(newValue);
+      // if(newValue){
+      //   this.$nextTick(()=>{
+      //     this.$refs.enterpriseFormRef.clearValidate();
+      //   })
+      // }
+      if(!newValue){
+        this.$refs.enterpriseFormRef.clearValidate();
+      }
+    }
+  },
   methods: {
     //新增 & 修改最终点击确定调用的方法
     submit() {
@@ -82,6 +95,9 @@ export default {
           //关闭点前对话框
           this.dialogvisible = false;
           //刷新父组件的数据
+          //第一种 方法 通过 $parent 调用父组件中的search方法
+          //this.$parent.search();
+          //第二种方法 通过 $emit()
           this.$emit("search");
         } else {
           //提示错误
