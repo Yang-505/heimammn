@@ -33,7 +33,7 @@
       </el-form>
       <!-- 底部 -->
       <span slot="footer">
-        <el-button @click="dialogVisible">取消</el-button>
+        <el-button @click="dialogVisible = !dialogVisible">取消</el-button>
         <el-button type="primary" @click="submit">确定</el-button>
       </span>
     </el-dialog>
@@ -43,11 +43,16 @@
 <script>
 export default {
   name: "userEdit",
-
+  props: {
+    mode: {
+      type: String,
+      default: "add"
+    }
+  },
   data() {
     return {
       dialogVisible: false,
-      mode: "", //模式, add 代表新增 edit 代表修改
+      // mode: "", //模式, add 代表新增 edit 代表修改
       userForm: {
         username: "", //用户名
         email: "", //邮箱
@@ -57,10 +62,12 @@ export default {
         remark: "" //备注
       },
       rules: {
+        //用户名
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
+        //邮箱
         email: [
           {
             required: true,
@@ -77,6 +84,7 @@ export default {
             trigger: "blur"
           }
         ],
+        //手机号
         phone: [
           {
             required: true,
@@ -94,12 +102,15 @@ export default {
             trigger: "blur"
           }
         ],
+        //角色
         role_id: [
           { required: true, message: "请选择用户角色", trigger: "change" }
         ],
+        //状态
         status: [
           { required: true, message: "请选择用户状态", trigger: "change" }
         ],
+        //备注
         remark: [{ required: true, message: "备注不能为空", trigger: "blur" }]
       }
     };
@@ -109,7 +120,8 @@ export default {
       //做最后一次效验
 
       this.$refs.userEditFormRef.validate(async valid => {
-        if(!valid) return;
+        //如果不等于 直接不执行下面代码
+        if (!valid) return;
         let res = null;
         if (this.mode === "add") {
           res = await this.$axios.post("/user/add", this.userForm);
@@ -127,7 +139,8 @@ export default {
           //刷新父组件的数据
           //1.第一种方法 this.$emit();
           //2.第二种方法 this.$parent.search();
-           this.$parent.search()
+          //  this.$parent.search()
+          this.$emit("editok");
         } else {
           //提示错误
           this.$message.error(res.data.message);

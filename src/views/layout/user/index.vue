@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
-            <el-button type="primary">编辑</el-button>
+            <el-button type="primary" @click="editUser(scope.row)">编辑</el-button>
             <el-button
               @click="changeStatus(scope.row.id)"
               :type="scope.row.status === 0 ? 'success' : 'info'"
@@ -58,22 +58,23 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="page"
-          :page-sizes="[1, 2, 3, 4,5]"
+          :page-sizes="[5, 10, 15, 20, 25]"
           :page-size="limit"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         ></el-pagination>
-        <UserEdit ref="userEditRef"></UserEdit>
+        <UserEdit ref="userEditRef" @editok="search" :mode="mode"></UserEdit>
       </div>
     </el-card>
   </div>
 </template>  
 
 <script>
-import UserEdit from './user-add-or-update'
+import UserEdit from "./user-add-or-update";
 export default {
+  name: "user",
   //注册
-  components:{
+  components: {
     UserEdit
   },
   name: "userlist",
@@ -86,9 +87,10 @@ export default {
         role_id: "" //角色数字, 1.超级管理员 2.管理员 3.老师 4.学生
       },
       page: 1, //页码
-      limit: 2, //查询时候的页容量(每页查询多少条)
+      limit: 5, //查询时候的页容量(每页查询多少条)
       userList: [], //展示用户列表所需的数据
-      total: 0 //总条数,分页时候用的着
+      total: 0, //总条数,分页时候用的着
+      mode: "add"
     };
   },
 
@@ -97,6 +99,7 @@ export default {
     this.getUserListData();
   },
   methods: {
+    // 用户列表数据,用于内容展示
     async getUserListData() {
       const res = await this.$axios.get("/user/list", {
         params: {
@@ -109,7 +112,7 @@ export default {
           // role_id:this.role_id
         }
       });
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data.code == 200) {
         this.userList = res.data.data.items;
 
@@ -118,11 +121,15 @@ export default {
     },
     //每页条数
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.limit = val;
+      this.search();
     },
     //当前页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
+      this.page = val;
+
+      this.getUserListData();
     },
 
     //搜索
@@ -135,7 +142,7 @@ export default {
       // this.searchForm.username = '';
       // this.searchForm.email = '';
       // this.searchForm.role_id = '';
-
+      //前提: 我们form表单 el-form-item 上面必须设置prop
       this.$refs.searchFormRef.resetFields();
 
       this.search();
@@ -173,9 +180,24 @@ export default {
         .catch(() => {});
     },
     //新增用户
-    add(){
+    add() {
+      // 让新增用户的对话框显示出来;
+      this.$refs.userEditRef.userForm = {
+        username: "", // 用户名
+        email: "", // 邮箱
+        phone: "", // 手机号
+        role_id: "", // 角色 1：超级管理员 2：管理员 3：老师 4：学生
+        status: "", // 状态 1：启用 0：禁用
+        remark: "" // 备注
+      };
+
+      this.mode = "add";
       this.$refs.userEditRef.dialogVisible = true;
-      this.$refs.userEditRef.mode = 'add';
+    },
+    //修改用户
+    editUser(row) {
+      this.mode = "edit";
+      this.$refs.userEditRef.dialogVisible = true;
     }
   }
 };

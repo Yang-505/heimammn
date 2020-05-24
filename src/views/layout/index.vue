@@ -2,16 +2,12 @@
   <el-container class="layout">
     <el-header class="header">
       <div class="left">
-        <i
-          @click="isCollapse = !isCollapse"
-          style="font-size: 20px;"
-          class="el-icon-s-fold"
-        ></i>
-        <img src="@/assets/layout_icon.png" class="marginlr" alt="" />
+        <i @click="isCollapse = !isCollapse" style="font-size: 20px;" class="el-icon-s-fold"></i>
+        <img src="@/assets/layout_icon.png" class="marginlr" alt />
         <span class="title">黑马面面</span>
       </div>
       <div class="right">
-        <img :src="avatar" alt="" />
+        <img :src="avatar" alt />
         <span class="name">{{ username }} 欢迎您</span>
         <el-button @click="logout" type="primary">退出</el-button>
       </div>
@@ -25,6 +21,10 @@
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
         >
+          <el-menu-item index="/layout/welcome">
+            <i class="el-icon-date"></i>
+            <span slot="title">个人信息</span>
+          </el-menu-item>
           <el-menu-item index="/layout/chart">
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据预览</span>
@@ -48,7 +48,6 @@
         </el-menu>
       </el-aside>
       <el-main style="background-color:#e8e9ec;">
-
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -63,7 +62,7 @@ export default {
       avatar: "", // 用户的头像
       username: "", // 昵称
       isCollapse: false, // 是否收起折叠菜单
-      defaultActive:'' //菜单选中的值
+      defaultActive: "" //菜单选中的值
     };
   },
   created() {
@@ -72,18 +71,15 @@ export default {
   },
   methods: {
     //获取用户信息
-    async getUserInfoData(){
-      const res = await this.$axios.get('/info',{
-
-      });
-      if(res.data.code == 200){
+    async getUserInfoData() {
+      const res = await this.$axios.get("/info", {});
+      if (res.data.code == 200) {
         //用户头像
         this.avatar = process.env.VUE_APP_BASEURL + "/" + res.data.data.avatar;
         //昵称
         this.username = res.data.data.username;
-      }else if(res.data.code == 206){
+      } else if (res.data.code == 206) {
         //删除token
-
         //跳转到登录页面
       }
     },
@@ -92,7 +88,7 @@ export default {
       this.$confirm("确定退出吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
         .then(async () => {
           const res = await this.$axios.get("/logout");
@@ -106,8 +102,8 @@ export default {
           }
         })
         .catch(() => {});
-    },
-  },
+    }
+  }
 };
 </script>
 
