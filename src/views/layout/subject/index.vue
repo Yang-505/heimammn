@@ -178,10 +178,33 @@ export default {
     //新增学科
     add() {
       this.$refs.subjectEditRef.mode = "add";
+      //为空
+      this.$refs.subjectEditRef.subjectForm = {
+        rid: "", //学科编号
+        name: "", //学科名称
+        short_name: "", //学科简称
+        intro: "", //学科简介
+        remark: "" //学科备注
+      };
       this.$refs.subjectEditRef.dialogvisible = true;
     },
     //编辑学科
-     editSubject() {},
+    editSubject(row) {
+      // console.log(row);
+      this.$refs.subjectEditRef.mode = "edit";
+      // this.$refs.subjectEditRef.subjectForm = JSON.stringify(JSON.stringify(row));
+      const { id, rid, name, short_name, intro, remark } = row;
+
+      this.$refs.subjectEditRef.subjectForm = {
+        id, //学科id
+        rid, //学科编号
+        name, //学科名称
+        short_name, //学科简称
+        intro, //学科简介
+        remark //学科备注
+      };
+      this.$refs.subjectEditRef.dialogvisible = true;
+    }
   }
 };
 </script>
