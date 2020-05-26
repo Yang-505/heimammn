@@ -193,11 +193,19 @@ export default {
 
       this.mode = "add";
       this.$refs.userEditRef.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs.userEditRef.$refs.userEditFormRef.clearValidate();
+      });
     },
     //修改用户
     editUser(row) {
+      console.log(row);
       this.mode = "edit";
+      this.$refs.userEditRef.userForm = JSON.parse(JSON.stringify(row));
       this.$refs.userEditRef.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs.userEditRef.$refs.userEditFormRef.clearValidate();
+      });
     }
   }
 };
