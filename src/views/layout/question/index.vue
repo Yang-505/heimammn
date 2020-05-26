@@ -2,7 +2,7 @@
   <div>
     <!-- 搜索部分 -->
     <el-card>
-      <el-form inline :model="searchForm" ref="form" label-width="50px">
+      <el-form inline  :model="searchForm" ref="searchFormRef" label-width="50px">
         <el-row>
           <el-col :span="6">
             <el-form-item class="selectWidth" label="学科" prop="subject">
@@ -87,8 +87,8 @@
           <el-col :span="12">
             <el-form-item>
               <el-button type="primary" @click="search">搜索</el-button>
-              <el-button>清除</el-button>
-              <el-button type="primary">+新增试题</el-button>
+              <el-button @click="clear">清除</el-button>
+              <el-button type="primary" @click="add">+新增试题</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -96,10 +96,15 @@
     </el-card>
     <!-- 列表区域 -->
     <el-card style="margin-top:15px;"></el-card>
+    <QuestionEdit ref="questionEditRef"></QuestionEdit>
   </div>
 </template>
 <script>
+import QuestionEdit from "./question-add-or-update";
 export default {
+  components: {
+    QuestionEdit
+  },
   name: "question",
   data() {
     return {
@@ -118,31 +123,71 @@ export default {
         username: "", // 作者
         status: "", // 状态 0 禁用 1 启用
         create_date: "", // 创建日期
-        title: "" // 标题
-      }
+        title: "" // 标题\
+      },
+      page: 1, //页数
+      limit: 2, //页容量(每页加载多少条)
+      questionList:[], //题库列表
+      total:0, //总条数  
     };
   },
   created() {
+    //获取题库列表数据
+    this.getQuestionListData();
     //获取所有的学科
     this.getSubjectListData();
     //获取所有企业
     this.getEnterpriseListData();
   },
   methods: {
-    search() {},
+    //搜索
+    search() {
+      this.page = 1;
 
-    async getSubjectListData() {
+      this.getQuestionListData();
+    },
+    //分页获取题库l列表
+    async getQuestionListData(){
+      const res = await this.$axios.get("/question/list",{
+        params:{
+          page:this.page,
+          limit:this.limit,
+          ...this.searchForm,
+        },
+      });
+
+      if(res.data.code ===200){
+        this.questionList = res.data.data.items;
+        this.total = res.data.data.pagination.total;
+      }
+    },
+    //查询所有的学科列表
+    async getSubjectListData(){
       const res = await this.$axios.get("/subject/list");
-      if (res.data.code === 200) {
+      if(res.data.code === 200){
         this.subjectList = res.data.data.items;
       }
     },
-    async getEnterpriseListData() {
+    //查询所有的企业列表
+    async getEnterpriseListData(){
       const res = await this.$axios.get("/enterprise/list");
-      if (res.data.code === 200) {
+      if(res.data.code === 200){
         this.enterpriseList = res.data.data.items;
-      }
-    }
+      } 
+    },
+
+    //清除
+    clear(){
+      //如果要调用 form表单 restFields 这个方法,需要给 el-form-item 设置prop
+      this.$refs.searchFormRef.resetFields();
+
+      //重新获取数据
+      this.search();
+    },
+    
+
+    //+新增试题
+    add() {}
   }
 };
 </script>
