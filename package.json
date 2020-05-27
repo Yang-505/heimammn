@@ -12,6 +12,7 @@
     "D": "^1.0.0",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "element-china-area-data": "^4.1.2",
     "element-ui": "^2.13.1",
     "less": "^3.11.1",
     "less-loader": "^6.1.0",
