@@ -156,7 +156,14 @@
         ></el-pagination>
       </div>
     </el-card>
-    <QuestionEdit ref="questionEditRef"></QuestionEdit>
+    <QuestionEdit 
+    ref="questionEditRef"
+    :subjectList="subjectList"
+    :enterpriseList="enterpriseList"
+    :stepObj="stepObj"
+    :typeObj="typeObj"
+    :difficultyObj="difficultyObj"
+    ></QuestionEdit>
   </div>
 </template>
 <script>
@@ -308,7 +315,10 @@ export default {
         .catch(() => {});
     },
     //+新增试题
-    add() {}
+    add() {
+      this.$refs.questionEditRef.mode = 'add';
+      this.$refs.questionEditRef.dialogvisible = true;
+    }
     // test测试
     // filters:{
     //   formatType(val){
