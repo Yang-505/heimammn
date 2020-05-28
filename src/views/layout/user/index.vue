@@ -44,8 +44,12 @@
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
             <el-button type="primary" @click="editUser(scope.row)">编辑</el-button>
-            <el-button
+            <!-- <el-button
               @click="changeStatus(scope.row.id)"
+              :type="scope.row.status === 0 ? 'success' : 'info'"
+            >{{scope.row.status === 0 ? '启用' : '禁用'}}</el-button>-->
+            <el-button
+              @click="changeStatus('/user/status',scope.row.id)"
               :type="scope.row.status === 0 ? 'success' : 'info'"
             >{{scope.row.status === 0 ? '启用' : '禁用'}}</el-button>
             <el-button type="default" @click="deleteUser(scope.row.id,scope.row.username)">删除</el-button>
@@ -70,8 +74,12 @@
 </template>  
 
 <script>
+/* 导入子组件 */
 import UserEdit from "./user-add-or-update";
+/* 导入混入对象 */
+import common from '@/mixins/common'
 export default {
+  mixins:[common],
   name: "user",
   //注册
   components: {
@@ -148,17 +156,17 @@ export default {
       this.search();
     },
     //操作启用/禁用
-    async changeStatus(id) {
-      const res = await this.$axios.post("/user/status", { id });
-      if (res.data.code == 200) {
-        this.$message({
-          message: "更新状态成功~",
-          type: "success"
-        });
-      }
-      //重新查询
-      this.search();
-    },
+    // async changeStatus(id) {
+    //   const res = await this.$axios.post("/user/status", { id });
+    //   if (res.data.code == 200) {
+    //     this.$message({
+    //       message: "更新状态成功~",
+    //       type: "success"
+    //     });
+    //   }
+    //   //重新查询
+    //   this.search();
+    // },
     //删除用户
     deleteUser(id, username) {
       this.$confirm(`确定要删除${username}该用户吗?`, "提示", {

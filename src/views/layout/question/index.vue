@@ -156,14 +156,15 @@
         ></el-pagination>
       </div>
     </el-card>
-    <QuestionEdit 
+    <!-- 子组件 -->
+    <question-edit 
     ref="questionEditRef"
     :subjectList="subjectList"
     :enterpriseList="enterpriseList"
     :stepObj="stepObj"
     :typeObj="typeObj"
     :difficultyObj="difficultyObj"
-    ></QuestionEdit>
+    ></question-edit>
   </div>
 </template>
 <script>
