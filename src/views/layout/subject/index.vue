@@ -45,11 +45,16 @@
           <el-table-column label="操作" width="280">
             <template slot-scope="scope">
               <el-button type="primary" @click="editSubject(scope.row)">编辑</el-button>
-              <el-button
+              <!-- <el-button
                 :type="scope.row.status === 0 ? 'success' : 'info'"
                 @click="changeStatus(scope.row.id)"
+              >{{scope.row.status === 0 ? "启用" : "禁用"}}</el-button> -->
+               <el-button
+                :type="scope.row.status === 0 ? 'success' : 'info'"
+                @click="changeStatus('/subject/status',scope.row.id)"
               >{{scope.row.status === 0 ? "启用" : "禁用"}}</el-button>
-              <el-button type="danger" @click="del(scope.row.id,scope.row.username)">删除</el-button>
+              <!-- <el-button type="danger" @click="del(scope.row.id,scope.row.username)">删除</el-button> -->
+              <el-button type="danger" @click="del('/subject/remove',scope.row.id,)">删除</el-button>
             </template>
           </el-table-column>
         </el-table-column>
@@ -72,7 +77,10 @@
 </template>
 <script>
 import SubjectEdit from "./subject-add-or-update";
+/* 导入混入对象 */
+import common from '@/mixins/common';
 export default {
+  mixins:[ common ],
   components: {
     //局部注册
     "subject-edit": SubjectEdit
@@ -93,10 +101,10 @@ export default {
     };
   },
   created() {
-    this.getSubjectListData();
+    this.getListData();
   },
   methods: {
-    async getSubjectListData() {
+    async getListData() {
       const res = await this.$axios.get("/subject/list", {
         params: {
           page: this.page,
@@ -114,7 +122,7 @@ export default {
     search() {
       this.page = 1;
 
-      this.getSubjectListData();
+      this.getListData();
     },
     //清除
     clear() {
@@ -124,25 +132,25 @@ export default {
     },
 
     //更改状态
-    async changeStatus(id) {
-      const res = await this.$axios.post("/subject/status", { id });
-      if (res.data.code === 200) {
-        //提示
-        this.$message({
-          type: "success",
-          message: "更新状态成功~"
-        });
+    // async changeStatus(id) {
+    //   const res = await this.$axios.post("/subject/status", { id });
+    //   if (res.data.code === 200) {
+    //     //提示
+    //     this.$message({
+    //       type: "success",
+    //       message: "更新状态成功~"
+    //     });
 
-        //刷新表格
-        this.getSubjectListData();
-      }
-    },
+    //     //刷新表格
+    //     this.getSubjectListData();
+    //   }
+    // },
     //当前的页码发生了改变
     CurrentChange(val) {
       // console.log(val);
       this.page = val;
 
-      this.getSubjectListData();
+      this.getListData();
     },
     //分页条的页容量发生了改变,如果是页容量发生了改变我们要从第一页开始加载
     SizeChange(val) {
@@ -152,28 +160,28 @@ export default {
     },
 
     //删除
-    del(id, username) {
-      // console.log(id);
-      this.$confirm(`确定删除${username}该用户吗`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(async () => {
-          const res = await this.$axios.post("/subject/remove", { id });
-          if (res.data.code === 200) {
-            //提示
-            this.$message({
-              type: "success",
-              message: "删除成功~"
-            });
+    // del(id, username) {
+    //   // console.log(id);
+    //   this.$confirm(`确定删除${username}该用户吗`, "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(async () => {
+    //       const res = await this.$axios.post("/subject/remove", { id });
+    //       if (res.data.code === 200) {
+    //         //提示
+    //         this.$message({
+    //           type: "success",
+    //           message: "删除成功~"
+    //         });
 
-            //刷新表格
-            this.search();
-          }
-        })
-        .catch(() => {});
-    },
+    //         //刷新表格
+    //         this.search();
+    //       }
+    //     })
+    //     .catch(() => {});
+    // },
 
     //新增学科
     add() {

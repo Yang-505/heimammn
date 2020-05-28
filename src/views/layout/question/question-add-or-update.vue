@@ -1,7 +1,7 @@
 <template>
   <div class="questionEdit">
     <el-dialog :visible.sync="dialogvisible" fullscreen>
-      <div slot="title" class="title">{{mode === "add" ? '新增试题' : "修改试题"}}</div>
+      <div slot="title" class="title">{{mode === "add" ? '新增试题' : "编辑试题"}}</div>
       <el-form
         class="form"
         :rules="rules"
@@ -120,6 +120,8 @@ export default {
         type: "1", //题型
         difficulty: "1", //难度
         title: "", //标题
+        multiple_select_answer: [], //多选答案
+        single_select_answer: "", //单选答案
         answer_analyze: "", //答案解析
         remark: "", //答案备注
         select_options: [
@@ -169,6 +171,7 @@ export default {
   }
 };
 </script>
+
 <style lang="less">
 .questionEdit {
   .title {
@@ -191,7 +194,7 @@ export default {
   .selectWidth {
     width: 300px;
   }
-  hrMargin {
+  .hrMargin {
     margin-bottom: 20px;
   }
   .setMargin {

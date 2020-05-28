@@ -140,7 +140,12 @@
               @click="changeSubject(scope.row.id)"
               :type="scope.row.status === 0 ? 'success' : 'info'"
             >{{scope.row.status === 0 ? '启用' : '禁用'}}</el-button>
-            <el-button @click="del(scope.row.id)" type="danger">删除</el-button>
+            <!-- <el-button
+              @click="changeStatus('/question/status',scope.row.id)"
+              :type="scope.row.status === 0 ? 'success' : 'info'"
+            >{{scope.row.status === 0 ? '启用' : '禁用'}}</el-button>-->
+            <!-- <el-button @click="del(scope.row.id)" type="danger">删除</el-button> -->
+            <el-button @click="del('/question/remove',scope.row.id)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -157,19 +162,22 @@
       </div>
     </el-card>
     <!-- 子组件 -->
-    <question-edit 
-    ref="questionEditRef"
-    :subjectList="subjectList"
-    :enterpriseList="enterpriseList"
-    :stepObj="stepObj"
-    :typeObj="typeObj"
-    :difficultyObj="difficultyObj"
+    <question-edit
+      ref="questionEditRef"
+      :subjectList="subjectList"
+      :enterpriseList="enterpriseList"
+      :stepObj="stepObj"
+      :typeObj="typeObj"
+      :difficultyObj="difficultyObj"
     ></question-edit>
   </div>
 </template>
 <script>
 import QuestionEdit from "./question-add-or-update";
+/* 导入混入对象 */
+import common from "@/mixins/common";
 export default {
+  mixins: [common],
   components: {
     QuestionEdit
   },
@@ -294,30 +302,30 @@ export default {
       }
     },
     //删除
-    async del(id) {
-      this.$confirm("确定要删除该条记录吗", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(async () => {
-          const res = await this.$axios.post("/question/remove", { id });
-          if (res.data.code === 200) {
-            //提示
-            this.$message({
-              type: "success",
-              message: "删除成功"
-            });
+    // async del(id) {
+    //   this.$confirm("确定要删除该条记录吗", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(async () => {
+    //       const res = await this.$axios.post("/question/remove", { id });
+    //       if (res.data.code === 200) {
+    //         //提示
+    //         this.$message({
+    //           type: "success",
+    //           message: "删除成功"
+    //         });
 
-            //从第一页数据加载
-            this.search();
-          }
-        })
-        .catch(() => {});
-    },
+    //         //从第一页数据加载
+    //         this.search();
+    //       }
+    //     })
+    //     .catch(() => {});
+    // },
     //+新增试题
     add() {
-      this.$refs.questionEditRef.mode = 'add';
+      this.$refs.questionEditRef.mode = "add";
       this.$refs.questionEditRef.dialogvisible = true;
     }
     // test测试
