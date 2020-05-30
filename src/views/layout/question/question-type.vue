@@ -7,6 +7,7 @@
         <!-- input -->
         <el-input v-model="item.text"></el-input>
         <!-- 上传的子组件 -->
+        <upload-file style="margin-left:15px;"></upload-file>
       </div>
     </div>
     <div v-if="questionForm.type == 2">
@@ -17,6 +18,7 @@
         <!-- input -->
         <el-input style="margin-left:15px;" v-model="item.text"></el-input>
         <!-- 上传的子组件 -->
+        <upload-file></upload-file>
       </div>
     </div>
     <div v-if="questionForm.type == 3">
@@ -32,7 +34,11 @@
 </template>
 
 <script>
+import UploadFile from './upload-file';
 export default {
+  components:{
+    UploadFile
+  },
   name: "QuestionType",
   props: ["questionForm"],
 };

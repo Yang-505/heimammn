@@ -16,8 +16,9 @@ import '@/utils/request.js'
 
 //导入 requesy(封装了axios 路由)
 import router from '@/router'
-
+import store from '@/store'
 new Vue({
   render: h => h(App),
-  router
+  router,
+  store
 }).$mount('#app')

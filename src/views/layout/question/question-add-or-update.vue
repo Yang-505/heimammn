@@ -62,7 +62,9 @@
           <question-type :questionForm="questionForm"></question-type>
         </el-form-item>
         <hr class="hrMargin" />
-        <el-form-item label="解析视频"></el-form-item>
+        <el-form-item label="解析视频">
+          <upload-file type="video"></upload-file>
+        </el-form-item>
         <el-form-item label="答案解析" class="setMargin" prop="answer_analyze">
           <quill-editor :options="{placeholder:'请输入答案解析...'}" v-model="questionForm.answer_analyze"></quill-editor>
         </el-form-item>
@@ -88,6 +90,7 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import QuestionType from "./question-type";
+import UploadFile from './upload-file';
 export default {
   name: "QuestionEdit",
   created() {
@@ -96,7 +99,8 @@ export default {
   /* 注册 */
   components: {
     quillEditor,
-    QuestionType
+    QuestionType,
+    UploadFile
   },
   props: {
     subjectList: Array,
