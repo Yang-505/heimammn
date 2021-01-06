@@ -10,7 +10,7 @@
   "dependencies": {
     "-": "0.0.1",
     "D": "^1.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "element-china-area-data": "^4.1.2",
     "element-ui": "^2.13.1",
